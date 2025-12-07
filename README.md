@@ -1,4 +1,4 @@
-# HCAM-KG™ — BFSI AI Hinglish Knowledge Graph  
+# HCAM-KG™ - BFSI AI Hinglish Knowledge Graph  
 ### Powered by GurukulOnRoad & GurukulAI Thought Lab
 
 This repository hosts the HCAM-KG™ (Hinglish Cognitive Anchoring Model™) datasets for BFSI domains, starting with:

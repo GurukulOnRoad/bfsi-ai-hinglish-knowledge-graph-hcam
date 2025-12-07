@@ -1,0 +1,33 @@
+# macOS system files
+.DS_Store
+
+# Windows thumbnails
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.log
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+
+# Backups
+*.bak
+*.backup
+*.orig
+
+# Python cache (if dataset validator scripts run)
+__pycache__/
+*.pyc
+
+# Node cache (if JS-based validators run)
+node_modules/
+
+# Draft JSON files (not for publishing)
+drafts/
+*_draft.json
+
+# Auto-generated exports (optional)
+export/

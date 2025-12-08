@@ -1,5 +1,4 @@
 name: Validate HCAM™ Knowledge Graph JSON
-
 on:
   push:
     paths:

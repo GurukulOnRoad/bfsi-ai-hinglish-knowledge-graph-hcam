@@ -4,13 +4,11 @@ on:
   push:
     paths:
       - "*.json"
-      - "schemas/*.json"
       - "scripts/validate_hcam_json.py"
       - ".github/workflows/validate-hcam-json.yml"
   pull_request:
     paths:
       - "*.json"
-      - "schemas/*.json"
       - "scripts/validate_hcam_json.py"
       - ".github/workflows/validate-hcam-json.yml"
 
@@ -27,10 +25,12 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Install Python dependencies
+      # Optional: quick sanity check of paths
+      - name: List files for debugging
         run: |
-          python -m pip install --upgrade pip
-          pip install jsonschema
+          pwd
+          ls
+          ls scripts
 
       - name: Run HCAM JSON validator
         run: |

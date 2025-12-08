@@ -11,10 +11,22 @@ FILES_TO_VALIDATE = [
     "equity-derivatives-hcam-viii.json",
 ]
 
-DATA_DIR = BASE_DIR  # adjust if you move files into /data, /json etc.
+DATA_DIR = BASE_DIR  # adjust if you move JSON files into /data or /json etc.
 
-# How strict do you want? For now: only structural issues = errors.
-STRICT_MODE = False
+
+# These are the ONLY fields we validate per term
+REQUIRED_FIELDS = [
+    "id",
+    "domain",
+    "pillar",
+    "topic_cluster",
+    "label_en",
+    "label_hi",
+    "label_hiLatn",
+    "def_en",
+    "def_hi",
+    "def_hiLatn_explainer",
+]
 
 
 def load_json(path: Path) -> Any:
@@ -22,45 +34,21 @@ def load_json(path: Path) -> Any:
         return json.load(f)
 
 
-def validate_core_fields(
+def validate_required_fields(
     term: Dict[str, Any],
     filename: str,
     errors: List[str],
-    warnings: List[str],
 ):
     tid = term.get("id")
-    if not isinstance(tid, str) or not tid.strip():
-        errors.append(f"[{filename}] Term has missing/invalid 'id': {tid!r}")
 
-    # Minimum semantics for a glossary term
-    if "label_en" not in term or not isinstance(term.get("label_en"), str):
-        errors.append(f"[{filename}][id={tid}] Missing or invalid 'label_en'")
+    # If id missing or not string, still log with repr
+    id_for_log = tid if isinstance(tid, str) else "UNKNOWN"
 
-    if "def_en" not in term or not isinstance(term.get("def_en"), str):
-        errors.append(f"[{filename}][id={tid}] Missing or invalid 'def_en'")
-
-    if "def_hi" not in term or not isinstance(term.get("def_hi"), str):
-        errors.append(f"[{filename}][id={tid}] Missing or invalid 'def_hi'")
-
-    # Soft checks → warnings only
-    soft_fields = [
-        "label_hi",
-        "label_hiLatn",
-        "def_hiLatn_explainer",
-        "mental_anchor",
-        "exam_mnemonic",
-    ]
-    for field in soft_fields:
-        if field not in term:
-            warnings.append(
-                f"[{filename}][id={tid}] (warning) Optional field '{field}' is missing"
-            )
-
-    # related_concepts should be a list if present
-    if "related_concepts" in term:
-        if not isinstance(term["related_concepts"], list):
+    for field in REQUIRED_FIELDS:
+        value = term.get(field)
+        if not isinstance(value, str) or not value.strip():
             errors.append(
-                f"[{filename}][id={tid}] 'related_concepts' must be a list if present"
+                f"[{filename}][id={id_for_log}] Missing or invalid required field '{field}'"
             )
 
 
@@ -73,7 +61,7 @@ def validate_unique_ids(
     for idx, term in enumerate(terms):
         tid = term.get("id")
         if not isinstance(tid, str):
-            # already reported by core check, but keep going
+            # already handled as a required-field error; skip from duplicate logic
             continue
         if tid in seen:
             errors.append(
@@ -83,40 +71,37 @@ def validate_unique_ids(
             seen[tid] = idx
 
 
-def validate_file(path: Path) -> Tuple[int, int, List[str], List[str]]:
+def validate_file(path: Path) -> Tuple[int, List[str]]:
     filename = path.name
     errors: List[str] = []
-    warnings: List[str] = []
 
     try:
         data = load_json(path)
     except Exception as e:
         errors.append(f"[{filename}] JSON parse error: {e}")
-        return len(errors), len(warnings), errors, warnings
+        return len(errors), errors
 
     if not isinstance(data, list):
         errors.append(f"[{filename}] Root JSON must be a list of term objects.")
-        return len(errors), len(warnings), errors, warnings
+        return len(errors), errors
 
     for term in data:
         if not isinstance(term, dict):
             errors.append(f"[{filename}] Term is not an object: {term!r}")
             continue
-        validate_core_fields(term, filename, errors, warnings)
+        validate_required_fields(term, filename, errors)
 
     # Cross-term check for ids
     validate_unique_ids(filename, data, errors)
 
-    return len(errors), len(warnings), errors, warnings
+    return len(errors), errors
 
 
 def main() -> int:
     total_errors = 0
-    total_warnings = 0
     all_error_messages: List[str] = []
-    all_warning_messages: List[str] = []
 
-    print("=== HCAM-KG JSON Validation (soft mode) ===")
+    print("=== HCAM-KG JSON Validation (minimal required-fields mode) ===")
 
     for fname in FILES_TO_VALIDATE:
         path = DATA_DIR / fname
@@ -128,28 +113,20 @@ def main() -> int:
             continue
 
         print(f"\nValidating {fname} ...")
-        err_count, warn_count, errors, warnings = validate_file(path)
+        err_count, errors = validate_file(path)
         total_errors += err_count
-        total_warnings += warn_count
         all_error_messages.extend(errors)
-        all_warning_messages.extend(warnings)
 
         if err_count == 0:
-            print(f"✅ {fname}: OK (warnings: {warn_count})")
+            print(f"✅ {fname}: OK")
         else:
-            print(f"❌ {fname}: {err_count} error(s), {warn_count} warning(s)")
+            print(f"❌ {fname}: {err_count} error(s)")
 
     if total_errors > 0:
         print("\n--- Validation Errors ---")
         for msg in all_error_messages:
             print(msg)
 
-    if total_warnings > 0:
-        print("\n--- Validation Warnings (do not fail CI) ---")
-        for msg in all_warning_messages:
-            print(msg)
-
-    if total_errors > 0:
         print(f"\nValidation FAILED with {total_errors} error(s).")
         return 1
 

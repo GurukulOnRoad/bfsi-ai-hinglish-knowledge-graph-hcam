@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/GurukulOnRoad/bfsi-ai-hinglish-knowledge-graph-hcam/schemas/hcam_term.schema.json",
+  "title": "HCAM-KG Term Object",
+  "description": "Single term node in the HCAM™ Knowledge Graph for BFSI & AI Hinglish glossary.",
+  "type": "object",
+
+  "required": [
+    "id",
+    "pillar",
+    "topic_cluster",
+    "label_en",
+    "label_hi",
+    "label_hiLatn",
+    "def_en",
+    "def_hi",
+    "def_hiLatn_explainer"
+  ],
+
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "domain": {
+      "type": "string",
+      "description": "Standard domain field for AI terms (e.g., 'AI Literacy')."
+    },
+
+    "hacm_bfsieqd_domain": {
+      "type": "string",
+      "description": "Domain field for BFSI EQD terms (e.g., 'BFSI')."
+    },
+
+    "pillar": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "topic_cluster": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "label_en": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "label_hi": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "label_hiLatn": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "def_en": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "def_hi": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "def_hiLatn_explainer": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+
+  "additionalProperties": true
+}

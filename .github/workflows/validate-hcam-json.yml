@@ -4,11 +4,13 @@ on:
   push:
     paths:
       - "*.json"
+      - "schemas/*.json"
       - "scripts/validate_hcam_json.py"
       - ".github/workflows/validate-hcam-json.yml"
   pull_request:
     paths:
       - "*.json"
+      - "schemas/*.json"
       - "scripts/validate_hcam_json.py"
       - ".github/workflows/validate-hcam-json.yml"
 
@@ -25,15 +27,54 @@ jobs:
         with:
           python-version: "3.x"
 
-      # Optional: quick sanity check of paths
-      - name: List files for debugging
+      - name: Install Python dependencies
         run: |
-          pwd
-          ls
-          ls scripts
+          python -m pip install --upgrade pip
+          pip install jsonschema black
+
+      # Optional formatter check (Python)
+      - name: Check Python formatting with Black
+        run: |
+          black --check scripts
+
+      # Optional: JSON formatting check hook (you can wire prettier here later)
+      # - name: (Optional) Check JSON formatting
+      #   run: |
+      #     echo "Add prettier/jq based JSON format checks here if needed."
 
       - name: Run HCAM JSON validator
+        id: validate_hcam
         run: |
           python scripts/validate_hcam_json.py \
             bharat-ai-education-hindi-ai-glossary-hcam-knowledge-graph.json \
             equity-derivatives-hcam-viii.json
+
+      - name: Comment on PR when validation fails
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let body = '❌ HCAM JSON validation failed.\n\n';
+
+            try {
+              const reportPath = 'hcam_validation_report.txt';
+              if (fs.existsSync(reportPath)) {
+                const report = fs.readFileSync(reportPath, 'utf8');
+                const trimmed = report.length > 4000
+                  ? report.slice(0, 4000) + '\n...\n(Trimmed for length)'
+                  : report;
+                body += '```text\n' + trimmed + '\n```';
+              } else {
+                body += '_No validation report file found._';
+              }
+            } catch (e) {
+              body += '_Error while reading validation report._';
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });

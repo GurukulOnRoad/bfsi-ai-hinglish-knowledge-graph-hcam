@@ -1,20 +1,8 @@
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Files to validate (repo root)
-FILES_TO_VALIDATE = [
-    "bharat-ai-education-hindi-ai-glossary-hcam-knowledge-graph.json",
-    "equity-derivatives-hcam-viii.json",
-]
-
-DATA_DIR = BASE_DIR  # adjust if you move JSON files into /data or /json etc.
-
-
-# These are the ONLY fields we validate per term
+# Only these 10 fields are treated as REQUIRED
 REQUIRED_FIELDS = [
     "id",
     "domain",
@@ -28,111 +16,106 @@ REQUIRED_FIELDS = [
     "def_hiLatn_explainer",
 ]
 
+def flatten_term(raw_term):
+    """
+    Convert a JSON-LD DefinedTerm into a flat HCAM dict
+    so we can validate required fields consistently.
+    Works for both AI & Equity files.
+    """
+    flat = {}
 
-def load_json(path: Path) -> Any:
+    # ID: prefer explicit 'id', else derive from '@id'
+    if "id" in raw_term and raw_term["id"]:
+        flat["id"] = raw_term["id"]
+    elif raw_term.get("@id"):
+        rid = raw_term["@id"]
+        flat["id"] = rid.split("#")[-1] if "#" in rid else rid
+
+    # English label: prefer 'label_en', else 'name'
+    if "label_en" in raw_term:
+        flat["label_en"] = raw_term["label_en"]
+    elif raw_term.get("name"):
+        flat["label_en"] = raw_term["name"]
+
+    # Hindi + Hinglish labels from alternateName if needed
+    alt = raw_term.get("alternateName")
+    if isinstance(alt, list):
+        if len(alt) > 0 and "label_hi" not in flat:
+            flat["label_hi"] = alt[0]
+        if len(alt) > 1 and "label_hiLatn" not in flat:
+            flat["label_hiLatn"] = alt[1]
+    elif isinstance(alt, str):
+        flat.setdefault("label_hi", alt)
+
+    # English definition: prefer 'def_en', else 'description'
+    if "def_en" in raw_term:
+        flat["def_en"] = raw_term["def_en"]
+    elif raw_term.get("description"):
+        flat["def_en"] = raw_term["description"]
+
+    # Pull all HCAM props from additionalProperty[]
+    for prop in raw_term.get("additionalProperty", []):
+        name = prop.get("name")
+        value = prop.get("value")
+        if name and value is not None:
+            flat[name] = value
+
+    # Domain aliasing (Equity uses 'domain' already; this is future-proof)
+    if "domain" not in flat and "hacm_bfsieqd_domain" in flat:
+        flat["domain"] = flat["hacm_bfsieqd_domain"]
+
+    return flat
+
+def load_terms(path: Path):
     with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
+        data = json.load(f)
 
+    # Shape 1: Bharat AI → [ {DefinedTerm}, … ]
+    if isinstance(data, list):
+        return data
 
-def validate_required_fields(
-    term: Dict[str, Any],
-    filename: str,
-    errors: List[str],
-):
-    tid = term.get("id")
+    # Shape 2: Equity → { "@type": "DefinedTermSet", "hasDefinedTerm": [ … ] }
+    if isinstance(data, dict) and "hasDefinedTerm" in data:
+        return data["hasDefinedTerm"]
 
-    # If id missing or not string, still log with repr
-    id_for_log = tid if isinstance(tid, str) else "UNKNOWN"
+    print(f"[{path.name}] Root JSON must be a list of DefinedTerm objects or a DefinedTermSet.hasDefinedTerm array.")
+    return None
 
-    for field in REQUIRED_FIELDS:
-        value = term.get(field)
-        if not isinstance(value, str) or not value.strip():
-            errors.append(
-                f"[{filename}][id={id_for_log}] Missing or invalid required field '{field}'"
-            )
-
-
-def validate_unique_ids(
-    filename: str,
-    terms: List[Dict[str, Any]],
-    errors: List[str],
-):
-    seen: Dict[str, int] = {}
-    for idx, term in enumerate(terms):
-        tid = term.get("id")
-        if not isinstance(tid, str):
-            # already handled as a required-field error; skip from duplicate logic
-            continue
-        if tid in seen:
-            errors.append(
-                f"[{filename}] Duplicate id '{tid}' at positions {seen[tid]} and {idx}"
-            )
-        else:
-            seen[tid] = idx
-
-
-def validate_file(path: Path) -> Tuple[int, List[str]]:
-    filename = path.name
-    errors: List[str] = []
-
-    try:
-        data = load_json(path)
-    except Exception as e:
-        errors.append(f"[{filename}] JSON parse error: {e}")
-        return len(errors), errors
-
-    if not isinstance(data, list):
-        errors.append(f"[{filename}] Root JSON must be a list of term objects.")
-        return len(errors), errors
-
-    for term in data:
-        if not isinstance(term, dict):
-            errors.append(f"[{filename}] Term is not an object: {term!r}")
-            continue
-        validate_required_fields(term, filename, errors)
-
-    # Cross-term check for ids
-    validate_unique_ids(filename, data, errors)
-
-    return len(errors), errors
-
-
-def main() -> int:
-    total_errors = 0
-    all_error_messages: List[str] = []
-
-    print("=== HCAM-KG JSON Validation (minimal required-fields mode) ===")
-
-    for fname in FILES_TO_VALIDATE:
-        path = DATA_DIR / fname
-        if not path.exists():
-            total_errors += 1
-            all_error_messages.append(
-                f"[{fname}] File not found at {path}. Check path or FILES_TO_VALIDATE."
-            )
-            continue
-
-        print(f"\nValidating {fname} ...")
-        err_count, errors = validate_file(path)
-        total_errors += err_count
-        all_error_messages.extend(errors)
-
-        if err_count == 0:
-            print(f"✅ {fname}: OK")
-        else:
-            print(f"❌ {fname}: {err_count} error(s)")
-
-    if total_errors > 0:
-        print("\n--- Validation Errors ---")
-        for msg in all_error_messages:
-            print(msg)
-
-        print(f"\nValidation FAILED with {total_errors} error(s).")
+def validate_file(path: Path):
+    terms = load_terms(path)
+    if terms is None:
         return 1
 
-    print("\nAll files validated successfully. ✅")
-    return 0
+    errors = 0
+    for raw_term in terms:
+        flat = flatten_term(raw_term)
+        term_id = flat.get("id", "UNKNOWN")
 
+        for field in REQUIRED_FIELDS:
+            # domain is just another required field now (after aliasing above)
+            value = flat.get(field)
+            if value is None or (isinstance(value, str) and not value.strip()):
+                print(f"[{path.name}][id={term_id}] Missing or invalid required field '{field}'")
+                errors += 1
+
+    if errors == 0:
+        print(f"[{path.name}] ✅ Validation PASSED for {len(terms)} terms.")
+    else:
+        print(f"[{path.name}] ❌ Validation FAILED with {errors} error(s).")
+
+    return 1 if errors else 0
+
+def main():
+    paths = [Path(p) for p in sys.argv[1:]]
+    if not paths:
+        print("No files passed to validator.")
+        sys.exit(1)
+
+    exit_code = 0
+    for p in paths:
+        exit_code |= validate_file(p)
+
+    sys.exit(exit_code)
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

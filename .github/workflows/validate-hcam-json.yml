@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - "*.json"
-      - ".github/validate_hcam_json.py"
+      - ".github/scripts/validate_hcam_json.py"
       - ".github/workflows/validate-hcam-json.yml"
   pull_request:
     paths:

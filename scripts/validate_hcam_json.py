@@ -1,146 +1,277 @@
-#!/usr/bin/env python3
 import json
 import sys
 from pathlib import Path
+from typing import Dict, List, Any, Tuple
 
-REQUIRED_FIELDS = [
-    "id",
-    "domain",
-    "pillar",
-    "topic_cluster",
-    "label_en",
-    "label_hi",
-    "label_hiLatn",
-    "def_en",
-    "def_hi",
+# --------- CONFIG: WHICH FILES TO VALIDATE ---------
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+FILES_TO_VALIDATE = [
+    "bharat-ai-education-hindi-ai-glossary-hcam-knowledge-graph.json",
+    "equity-derivatives-hcam-viii.json",
 ]
 
-# Fields we will cross-check as ID references
-REFERENCE_LIST_FIELDS = [
-    "related_concepts",
-    # you can add more here later if you start using ID lists elsewhere
-]
+DATA_DIR = BASE_DIR  # files are at repo root; change if in /data
 
 
-def load_terms_from_file(path: Path):
-    """Load JSON and return list of term objects."""
-    try:
-        with path.open("r", encoding="utf-8") as f:
-            data = json.load(f)
-    except json.JSONDecodeError as e:
-        raise ValueError(f"{path}: Invalid JSON – {e}") from e
+# --------- SCHEMAS FOR EACH FILE TYPE ---------
+class Schema:
+    def __init__(
+        self,
+        name: str,
+        required_fields: List[str],
+        id_prefix: str | None = None,
+        domain_field: str | None = None,
+        allowed_domains: List[str] | None = None,
+        allow_related: bool = True,
+    ):
+        self.name = name
+        self.required_fields = required_fields
+        self.id_prefix = id_prefix
+        self.domain_field = domain_field
+        self.allowed_domains = allowed_domains
+        self.allow_related = allow_related
 
-    # Support either:
-    # 1) [ {...}, {...} ]
-    # 2) { "terms": [ {...}, {...} ] }
-    if isinstance(data, list):
-        terms = data
-    elif isinstance(data, dict) and "terms" in data and isinstance(data["terms"], list):
-        terms = data["terms"]
-    else:
-        raise ValueError(
-            f"{path}: Expected top-level JSON array OR object with 'terms' array."
+
+AI_GLOSSARY_SCHEMA = Schema(
+    name="AI Glossary (HCAM-KG)",
+    required_fields=[
+        "id",
+        "domain",
+        "pillar",
+        "topic_cluster",
+        "label_en",
+        "label_hi",
+        "label_hiLatn",
+        "def_en",
+        "def_hi",
+        "def_hiLatn_explainer",
+        "mental_anchor",
+        "exam_mnemonic",
+        "use_case_example",
+        "exam_mapping",
+        "regulatory_reference",
+        "ai_use_case",
+        "prompt_example",
+        "related_concepts",
+        "broader_concept",
+        "narrower_concept",
+        "prerequisite_concept",
+    ],
+    id_prefix="hacm_bharat_ai_",
+    domain_field="domain",
+    allowed_domains=["AI Literacy", "AI Ethics"],
+    allow_related=True,
+)
+
+EQD_GLOSSARY_SCHEMA = Schema(
+    name="Equity Derivatives HCAM-KG (NISM VIII)",
+    required_fields=[
+        "id",
+        "bfsieqd_domain",
+        "pillar",
+        "topic_cluster",
+        "label_en",
+        "label_hi",
+        "label_hiLatn",
+        "def_en",
+        "def_hi",
+        "def_hiLatn_explainer",
+        "mental_anchor",
+        "exam_mnemonic",
+        "use_case_example",
+        "exam_mapping",
+        "regulatory_reference",
+        # NOTE: If later you add ai_use_case/prompt_example to EQD,
+        # add them here as required fields.
+    ],
+    id_prefix="bfsieqd_",
+    domain_field="bfsieqd_domain",
+    allowed_domains=["BFSI"],
+    allow_related=True,
+)
+
+
+SCHEMA_BY_FILENAME: Dict[str, Schema] = {
+    "bharat-ai-education-hindi-ai-glossary-hcam-knowledge-graph.json": AI_GLOSSARY_SCHEMA,
+    "equity-derivatives-hcam-viii.json": EQD_GLOSSARY_SCHEMA,
+}
+
+
+# --------- VALIDATION HELPERS ---------
+def load_json(path: Path) -> Any:
+    with path.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def validate_required_fields(
+    schema: Schema,
+    term: Dict[str, Any],
+    errors: List[str],
+    filename: str,
+):
+    for field in schema.required_fields:
+        if field not in term:
+            errors.append(
+                f"[{filename}][id={term.get('id')}] Missing required field '{field}'"
+            )
+        else:
+            if field == "related_concepts":
+                if not isinstance(term[field], list):
+                    errors.append(
+                        f"[{filename}][id={term.get('id')}] 'related_concepts' must be a list"
+                    )
+
+
+def validate_id_prefix(
+    schema: Schema,
+    term: Dict[str, Any],
+    errors: List[str],
+    filename: str,
+):
+    if not schema.id_prefix:
+        return
+    term_id = term.get("id")
+    if not isinstance(term_id, str):
+        errors.append(f"[{filename}] Term has non-string id: {term_id!r}")
+        return
+    if not term_id.startswith(schema.id_prefix):
+        errors.append(
+            f"[{filename}][id={term_id}] Expected id to start with '{schema.id_prefix}'"
         )
 
-    # Ensure all elements are dicts
-    for i, t in enumerate(terms):
-        if not isinstance(t, dict):
-            raise ValueError(f"{path}: Term at index {i} is not an object/dict.")
 
-    return terms
+def validate_domain(
+    schema: Schema,
+    term: Dict[str, Any],
+    errors: List[str],
+    filename: str,
+):
+    if not schema.domain_field:
+        return
+    df = schema.domain_field
+    if df not in term:
+        errors.append(
+            f"[{filename}][id={term.get('id')}] Missing domain field '{df}'"
+        )
+        return
+    if schema.allowed_domains:
+        val = term[df]
+        if val not in schema.allowed_domains:
+            errors.append(
+                f"[{filename}][id={term.get('id')}] Invalid {df} '{val}'. "
+                f"Allowed: {schema.allowed_domains}"
+            )
 
 
-def validate_terms(terms, file_label="(unknown)"):
-    errors = []
-    warnings = []
-
-    id_map = {}
-    for term in terms:
-        term_id = term.get("id")
-        if not term_id:
-            errors.append(f"{file_label}: Term missing 'id': {term}")
+def validate_unique_ids(
+    filename: str, terms: List[Dict[str, Any]], errors: List[str]
+):
+    seen: Dict[str, int] = {}
+    for idx, term in enumerate(terms):
+        tid = term.get("id")
+        if not isinstance(tid, str):
+            errors.append(f"[{filename}] Term #{idx} has invalid id: {tid!r}")
             continue
-
-        # Duplicate ID check
-        if term_id in id_map:
-            errors.append(f"{file_label}: Duplicate id '{term_id}' found.")
+        if tid in seen:
+            errors.append(
+                f"[{filename}] Duplicate id '{tid}' at positions {seen[tid]} and {idx}"
+            )
         else:
-            id_map[term_id] = term
+            seen[tid] = idx
 
-        # Required fields check
-        for field in REQUIRED_FIELDS:
-            if field not in term or term[field] in (None, ""):
+
+def validate_related_concepts_exist(
+    schema: Schema,
+    filename: str,
+    terms: List[Dict[str, Any]],
+    errors: List[str],
+):
+    if not schema.allow_related:
+        return
+    id_set = {t.get("id") for t in terms if isinstance(t.get("id"), str)}
+    for term in terms:
+        tid = term.get("id")
+        rel = term.get("related_concepts", [])
+        if not isinstance(rel, list):
+            continue
+        for r in rel:
+            if isinstance(r, str) and r not in id_set:
+                # Only warn if clearly an internal reference; if you plan cross-file links,
+                # you can later relax this and treat as WARNING instead of error.
                 errors.append(
-                    f"{file_label}: Term '{term_id}' missing required field '{field}'."
+                    f"[{filename}][id={tid}] related_concept '{r}' not found in this file"
                 )
 
-        # Type check: related_concepts should be list if present
-        for ref_field in REFERENCE_LIST_FIELDS:
-            if ref_field in term and term[ref_field] is not None:
-                if not isinstance(term[ref_field], list):
-                    errors.append(
-                        f"{file_label}: Term '{term_id}' field '{ref_field}' "
-                        f"must be a list of IDs."
-                    )
 
-    # Reference consistency check AFTER building id_map
-    for term in terms:
-        term_id = term.get("id", "(no-id)")
-        for ref_field in REFERENCE_LIST_FIELDS:
-            refs = term.get(ref_field, [])
-            if not isinstance(refs, list):
-                continue
-            for ref_id in refs:
-                if ref_id not in id_map:
-                    errors.append(
-                        f"{file_label}: Term '{term_id}' has {ref_field} "
-                        f"reference '{ref_id}' which does NOT exist in this file."
-                    )
+def validate_file(path: Path, schema: Schema) -> Tuple[int, List[str]]:
+    filename = path.name
+    errors: List[str] = []
 
-    return errors, warnings
+    try:
+        data = load_json(path)
+    except Exception as e:
+        errors.append(f"[{filename}] JSON parse error: {e}")
+        return len(errors), errors
+
+    if not isinstance(data, list):
+        errors.append(f"[{filename}] Root JSON must be a list of term objects.")
+        return len(errors), errors
+
+    # Per-term checks
+    for term in data:
+        if not isinstance(term, dict):
+            errors.append(f"[{filename}] Term is not an object: {term!r}")
+            continue
+        validate_required_fields(schema, term, errors, filename)
+        validate_id_prefix(schema, term, errors, filename)
+        validate_domain(schema, term, errors, filename)
+
+    # Cross-term checks
+    validate_unique_ids(filename, data, errors)
+    validate_related_concepts_exist(schema, filename, data, errors)
+
+    return len(errors), errors
 
 
-def main():
-    if len(sys.argv) < 2:
-        print("Usage: python scripts/validate_hcam_json.py <file1.json> [file2.json ...]")
-        sys.exit(1)
+def main() -> int:
+    total_errors = 0
+    all_messages: List[str] = []
 
-    all_errors = []
-    all_warnings = []
+    print("=== HCAM-KG JSON Validation ===")
+    for fname in FILES_TO_VALIDATE:
+        schema = SCHEMA_BY_FILENAME.get(fname)
+        if not schema:
+            print(f"Skipping {fname}: no schema configured.")
+            continue
 
-    for arg in sys.argv[1:]:
-        path = Path(arg)
+        path = DATA_DIR / fname
         if not path.exists():
-            all_errors.append(f"{path}: File not found.")
+            all_messages.append(f"[{fname}] File not found at {path}")
+            total_errors += 1
             continue
 
-        try:
-            terms = load_terms_from_file(path)
-        except ValueError as e:
-            all_errors.append(str(e))
-            continue
+        print(f"\nValidating {fname} using schema: {schema.name}")
+        count, messages = validate_file(path, schema)
+        total_errors += count
+        all_messages.extend(messages)
 
-        errors, warnings = validate_terms(terms, file_label=str(path))
-        all_errors.extend(errors)
-        all_warnings.extend(warnings)
+        if count == 0:
+            print(f"✅ {fname}: OK")
+        else:
+            print(f"❌ {fname}: {count} error(s)")
 
-    if all_warnings:
-        print("WARNINGS:")
-        for w in all_warnings:
-            print(f"  - {w}")
-        print()
+    if total_errors > 0:
+        print("\n--- Validation Errors ---")
+        for msg in all_messages:
+            print(msg)
 
-    if all_errors:
-        print("ERRORS:")
-        for e in all_errors:
-            print(f"  - {e}")
-        print()
-        print(f"Validation FAILED with {len(all_errors)} error(s).")
-        sys.exit(1)
+        print(f"\nValidation FAILED with {total_errors} error(s).")
+        return 1
 
-    print("✅ HCAM Knowledge Graph JSON validation PASSED.")
-    sys.exit(0)
+    print("\nAll files validated successfully. ✅")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

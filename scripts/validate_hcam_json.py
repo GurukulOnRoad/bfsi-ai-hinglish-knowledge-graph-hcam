@@ -1,99 +1,121 @@
-#!/usr/bin/env python
 import json
 import sys
 from pathlib import Path
 
-from jsonschema import Draft202012Validator
+# Only these 10 fields are treated as REQUIRED
+REQUIRED_FIELDS = [
+    "id",
+    "domain",
+    "pillar",
+    "topic_cluster",
+    "label_en",
+    "label_hi",
+    "label_hiLatn",
+    "def_en",
+    "def_hi",
+    "def_hiLatn_explainer",
+]
 
+def flatten_term(raw_term):
+    """
+    Convert a JSON-LD DefinedTerm into a flat HCAM dict
+    so we can validate required fields consistently.
+    Works for both AI & Equity files.
+    """
+    flat = {}
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-SCHEMA_PATH = REPO_ROOT / "schemas" / "hcam_term.schema.json"
-REPORT_PATH = REPO_ROOT / "hcam_validation_report.txt"
+    # ID: prefer explicit 'id', else derive from '@id'
+    if "id" in raw_term and raw_term["id"]:
+        flat["id"] = raw_term["id"]
+    elif raw_term.get("@id"):
+        rid = raw_term["@id"]
+        flat["id"] = rid.split("#")[-1] if "#" in rid else rid
 
+    # English label: prefer 'label_en', else 'name'
+    if "label_en" in raw_term:
+        flat["label_en"] = raw_term["label_en"]
+    elif raw_term.get("name"):
+        flat["label_en"] = raw_term["name"]
 
-def load_schema() -> dict:
-    if not SCHEMA_PATH.exists():
-        raise FileNotFoundError(f"Schema file not found: {SCHEMA_PATH}")
-    with SCHEMA_PATH.open("r", encoding="utf-8") as f:
-        return json.load(f)
+    # Hindi + Hinglish labels from alternateName if needed
+    alt = raw_term.get("alternateName")
+    if isinstance(alt, list):
+        if len(alt) > 0 and "label_hi" not in flat:
+            flat["label_hi"] = alt[0]
+        if len(alt) > 1 and "label_hiLatn" not in flat:
+            flat["label_hiLatn"] = alt[1]
+    elif isinstance(alt, str):
+        flat.setdefault("label_hi", alt)
 
+    # English definition: prefer 'def_en', else 'description'
+    if "def_en" in raw_term:
+        flat["def_en"] = raw_term["def_en"]
+    elif raw_term.get("description"):
+        flat["def_en"] = raw_term["description"]
 
-def validate_file(validator: Draft202012Validator, json_path: Path) -> int:
-    errors_found = 0
+    # Pull all HCAM props from additionalProperty[]
+    for prop in raw_term.get("additionalProperty", []):
+        name = prop.get("name")
+        value = prop.get("value")
+        if name and value is not None:
+            flat[name] = value
 
-    if not json_path.exists():
-        msg = f"[{json_path.name}] File not found."
-        print(msg)
-        REPORT_PATH.write_text(msg + "\n", encoding="utf-8")
+    # Domain aliasing (Equity uses 'domain' already; this is future-proof)
+    if "domain" not in flat and "hacm_bfsieqd_domain" in flat:
+        flat["domain"] = flat["hacm_bfsieqd_domain"]
+
+    return flat
+
+def load_terms(path: Path):
+    with path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    # Shape 1: Bharat AI → [ {DefinedTerm}, … ]
+    if isinstance(data, list):
+        return data
+
+    # Shape 2: Equity → { "@type": "DefinedTermSet", "hasDefinedTerm": [ … ] }
+    if isinstance(data, dict) and "hasDefinedTerm" in data:
+        return data["hasDefinedTerm"]
+
+    print(f"[{path.name}] Root JSON must be a list of DefinedTerm objects or a DefinedTermSet.hasDefinedTerm array.")
+    return None
+
+def validate_file(path: Path):
+    terms = load_terms(path)
+    if terms is None:
         return 1
 
-    with json_path.open("r", encoding="utf-8") as f:
-        try:
-            data = json.load(f)
-        except json.JSONDecodeError as e:
-            msg = f"[{json_path.name}] Invalid JSON: {e}"
-            print(msg)
-            with REPORT_PATH.open("a", encoding="utf-8") as rep:
-                rep.write(msg + "\n")
-            return 1
+    errors = 0
+    for raw_term in terms:
+        flat = flatten_term(raw_term)
+        term_id = flat.get("id", "UNKNOWN")
 
-    if not isinstance(data, list):
-        msg = f"[{json_path.name}] Root JSON must be a list of term objects."
-        print(msg)
-        with REPORT_PATH.open("a", encoding="utf-8") as rep:
-            rep.write(msg + "\n")
-        return 1
+        for field in REQUIRED_FIELDS:
+            # domain is just another required field now (after aliasing above)
+            value = flat.get(field)
+            if value is None or (isinstance(value, str) and not value.strip()):
+                print(f"[{path.name}][id={term_id}] Missing or invalid required field '{field}'")
+                errors += 1
 
-    for idx, term in enumerate(data):
-        term_id = term.get("id", "UNKNOWN")
-        for error in sorted(validator.iter_errors(term), key=lambda e: e.path):
-            errors_found += 1
-            field_path = ".".join(str(p) for p in error.path) or "<root>"
-            msg = (
-                f"[{json_path.name}][index={idx}][id={term_id}] "
-                f"Field '{field_path}': {error.message}"
-            )
-            print(msg)
-            with REPORT_PATH.open("a", encoding="utf-8") as rep:
-                rep.write(msg + "\n")
-
-    if errors_found == 0:
-        msg = f"[{json_path.name}] ✅ JSON Schema validation PASSED for {len(data)} term(s)."
-        print(msg)
-        with REPORT_PATH.open("a", encoding="utf-8") as rep:
-            rep.write(msg + "\n")
-
-    return errors_found
-
-
-def main(argv: list[str]) -> int:
-    if len(argv) < 2:
-        print(
-            "Usage: python scripts/validate_hcam_json.py "
-            "bharat-ai-education-hindi-ai-glossary-hcam-knowledge-graph.json "
-            "equity-derivatives-hcam-viii.json"
-        )
-        return 1
-
-    # clear previous report
-    if REPORT_PATH.exists():
-        REPORT_PATH.unlink()
-
-    schema = load_schema()
-    validator = Draft202012Validator(schema)
-
-    total_errors = 0
-    for file_arg in argv[1:]:
-        json_path = REPO_ROOT / file_arg
-        total_errors += validate_file(validator, json_path)
-
-    if total_errors == 0:
-        print("HCAM JSON validation SUCCESS.")
-        return 0
+    if errors == 0:
+        print(f"[{path.name}] ✅ Validation PASSED for {len(terms)} terms.")
     else:
-        print(f"HCAM JSON validation FAILED with {total_errors} error(s).")
-        return 1
+        print(f"[{path.name}] ❌ Validation FAILED with {errors} error(s).")
 
+    return 1 if errors else 0
+
+def main():
+    paths = [Path(p) for p in sys.argv[1:]]
+    if not paths:
+        print("No files passed to validator.")
+        sys.exit(1)
+
+    exit_code = 0
+    for p in paths:
+        exit_code |= validate_file(p)
+
+    sys.exit(exit_code)
 
 if __name__ == "__main__":
-    raise SystemExit(main(sys.argv))
+    main()

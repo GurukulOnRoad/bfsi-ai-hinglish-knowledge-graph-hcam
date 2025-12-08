@@ -3,12 +3,12 @@ on:
   push:
     paths:
       - "*.json"
-      - "scripts/validate_hcam_json.py"
+      - ".github/scripts/validate_hcam_json.py"
       - ".github/workflows/validate-hcam-json.yml"
   pull_request:
     paths:
       - "*.json"
-      - "scripts/validate_hcam_json.py"
+      - ".github/scripts/validate_hcam_json.py"
       - ".github/workflows/validate-hcam-json.yml"
 
 jobs:
@@ -26,6 +26,6 @@ jobs:
 
       - name: Run HCAM JSON validator
         run: |
-          python scripts/validate_hcam_json.py \
+          python .github/scripts/validate_hcam_json.py \
             bharat-ai-education-hindi-ai-glossary-hcam-knowledge-graph.json \
             equity-derivatives-hcam-viii.json

@@ -1,0 +1,48 @@
+name: Validate HCAM™ Knowledge Graph JSON
+
+on:
+  push:
+    branches: [ main ]
+    paths: ['**/*.json']
+  pull_request:
+    paths: ['**/*.json']
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Validate JSON syntax
+      uses: docker://orrosenblatt/validate-json-action:latest
+      env:
+        INPUT_JSONS: '**/*.json'
+    
+    - name: Validate HCAM Schema
+      uses: ammarlakis/action-ajv@master
+      with:
+        schema: hcam-schema.json  # Create this file
+        data: '**/*.json'
+        allErrors: true
+    
+    - name: Check HCAM Structure
+      run: |
+        # Verify required fields exist
+        jq -e '.[] | has("id") and has("domain") and has("label_en") and has("label_hi")' bharat-ai-education-*.json
+        jq -e '.[] | .id | test("^hacm_bharat_ai_")' bharat-ai-education-*.json
+    
+    - name: Data Quality Badge
+      uses: schneegans/dynamic-badges-action@v1.8.0
+      with:
+        authToken: ${{ secrets.GITHUB_TOKEN }}
+        badges: |
+          {
+            "1": {
+              "label": "HCAM Valid",
+              "message": "✅",
+              "color": "green"
+            }
+          }
+        files: |
+          README.md

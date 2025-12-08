@@ -1,10 +1,22 @@
 #!/usr/bin/env python3
+"""
+HCAM™ JSON Validator
+
+Supports:
+- A list of DefinedTerm objects (AI glossary)
+- A DefinedTermSet with hasDefinedTerm[] (Equity glossary)
+
+Validates:
+- Presence of key HCAM fields inside additionalProperty[]
+  (def_hi, def_hiLatn_explainer, domain, pillar, topic_cluster)
+"""
+
 import json
 import sys
 from pathlib import Path
 
-# HCAM-required fields that must exist inside additionalProperty[]
-REQUIRED_FIELDS = [
+# HCAM conceptual fields that must exist in additionalProperty[]
+REQUIRED_PROPERTIES = [
     "def_hi",
     "def_hiLatn_explainer",
     "domain",
@@ -12,30 +24,42 @@ REQUIRED_FIELDS = [
     "topic_cluster",
 ]
 
-def load_json(path_str):
+
+def load_json(path_str: str):
     path = Path(path_str)
     with path.open(encoding="utf-8") as f:
         return json.load(f)
 
-def get_prop(term, name):
+
+def get_prop(term: dict, name: str):
     """
-    For a DefinedTerm object, pull a property from additionalProperty[]
+    For a DefinedTerm object, pull value from additionalProperty[]
     where PropertyValue.name == name.
     """
-    for pv in term.get("additionalProperty", []):
-        if isinstance(pv, dict) and pv.get("name") == name:
+    props = term.get("additionalProperty", [])
+    if not isinstance(props, list):
+        return None
+
+    for pv in props:
+        if not isinstance(pv, dict):
+            continue
+        if pv.get("name") == name:
             return pv.get("value")
     return None
 
-def term_id(term):
+
+def term_id(term: dict) -> str:
     # Prefer @id, fall back to name, then UNKNOWN
     return term.get("@id") or term.get("name") or "UNKNOWN"
 
-def validate_defined_term_list(filename, terms):
+
+def validate_defined_term_list(filename: str, terms: list) -> int:
     errors = 0
+
     for idx, term in enumerate(terms):
         tid = term_id(term)
 
+        # Basic type check
         if term.get("@type") != "DefinedTerm":
             print(
                 f"[{filename}][index={idx}][id={tid}] "
@@ -43,31 +67,36 @@ def validate_defined_term_list(filename, terms):
             )
             errors += 1
 
-        # Check that additionalProperty exists and is a list
+        # additionalProperty must exist and be a list
         if not isinstance(term.get("additionalProperty"), list):
             print(
                 f"[{filename}][index={idx}][id={tid}] "
                 "Missing or invalid 'additionalProperty' (expected an array)"
             )
             errors += 1
-            # If this is wrong, skip the rest for this term
+            # Without additionalProperty, we can't validate the rest
             continue
 
-        # Check each required conceptual field inside additionalProperty[]
-        for field in REQUIRED_FIELDS:
-            value = get_prop(term, field)
-            if value is None or (isinstance(value, str) and not value.strip()):
+        # Check required conceptual fields inside additionalProperty
+        for field_name in REQUIRED_PROPERTIES:
+            val = get_prop(term, field_name)
+            if val is None or (isinstance(val, str) and not val.strip()):
                 print(
                     f"[{filename}][index={idx}][id={tid}] "
-                    f"Missing or empty required field '{field}' in additionalProperty"
+                    f"Missing or empty required field '{field_name}' "
+                    f"in additionalProperty"
                 )
                 errors += 1
 
     return errors
 
-def main(argv):
+
+def main(argv) -> int:
     if len(argv) < 2:
-        print("Usage: python scripts/validate_hcam_json.py <file1.json> [<file2.json> ...]")
+        print(
+            "Usage: python scripts/validate_hcam_json.py "
+            "<file1.json> [<file2.json> ...]"
+        )
         return 1
 
     total_errors = 0
@@ -81,14 +110,14 @@ def main(argv):
             total_errors += 1
             continue
 
-        # Case 1: root is a list of DefinedTerm objects (AI glossary file)
+        # Case 1: file is a list of DefinedTerm objects (AI glossary)
         if isinstance(data, list):
             total_errors += validate_defined_term_list(filename, data)
             continue
 
-        # Case 2: root is a DefinedTermSet with hasDefinedTerm[] (Equity glossary file)
+        # Case 2: file is a DefinedTermSet with hasDefinedTerm[] (Equity glossary)
         if isinstance(data, dict) and data.get("@type") == "DefinedTermSet":
-            terms = data.get("hasDefinedTerm", [])
+            terms = data.get("hasDefinedTerm")
             if not isinstance(terms, list):
                 print(
                     f"[{filename}] 'hasDefinedTerm' must be a list "
@@ -99,7 +128,7 @@ def main(argv):
                 total_errors += validate_defined_term_list(filename, terms)
             continue
 
-        # Anything else is treated as invalid root structure
+        # Anything else is invalid root
         print(
             f"[{filename}] Root JSON must be either:\n"
             "  • a list of DefinedTerm objects, OR\n"
@@ -113,6 +142,7 @@ def main(argv):
 
     print("HCAM JSON validation PASSED ✅")
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv))

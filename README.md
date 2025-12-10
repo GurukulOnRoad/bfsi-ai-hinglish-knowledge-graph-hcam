@@ -2,6 +2,7 @@ HCAM-KG™  - BFSI & AI Hinglish Knowledge Graph Powered by GurukulOnRoad & Guru
 
 HCAM-KG™ (Hinglish Cognitive Anchoring Model™) is India’s first trilingual (Hindi ↔ English ↔ Hinglish) knowledge graph designed for Bharat learners, especially B-30 exam aspirants, BFSI professionals, and AI literacy learners.
 This repository provides structured, schema-validated datasets that power:
+
 •	Equity Derivatives Hinglish Glossary (NISM Series VIII)
 •	Mutual Funds Hinglish Glossary (NISM V-A)
 •	Bharat AI Education & Hindi AI Literacy Glossary

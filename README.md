@@ -34,12 +34,4 @@ This KG is used across:
 ## 📁 Dataset Files  
 All JSON datasets are available in `/datasets/`.
 
-## 🤝 Contributing
-1. Fork repo
-2. Add term following HCAM pattern
-3. PR → Auto-validation runs
-4. Merge → Live on GitHub raw + schema markup
-
-
-A direct download link is provided via:
 

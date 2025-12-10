@@ -46,6 +46,7 @@ This ensures:
 •	Uniform term structure
 •	Backward compatibility
 •	AI-ready, machine-readable format
+
 🤝 Contributing
 We welcome contributions from educators, domain experts, and developers.
 How to Contribute

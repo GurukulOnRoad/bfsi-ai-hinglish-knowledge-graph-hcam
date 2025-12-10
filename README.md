@@ -1,5 +1,5 @@
-HCAM-KG™  - BFSI & AI Hinglish Knowledge Graph
-Powered by GurukulOnRoad & GurukulAI Thought Lab
+HCAM-KG™  - BFSI & AI Hinglish Knowledge Graph Powered by GurukulOnRoad & GurukulAI Thought Lab
+
 HCAM-KG™ (Hinglish Cognitive Anchoring Model™) is India’s first trilingual (Hindi ↔ English ↔ Hinglish) knowledge graph designed for Bharat learners, especially B-30 exam aspirants, BFSI professionals, and AI literacy learners.
 This repository provides structured, schema-validated datasets that power:
 •	Equity Derivatives Hinglish Glossary (NISM Series VIII)
@@ -11,6 +11,7 @@ This repository provides structured, schema-validated datasets that power:
 •	GurukulAI bots, assistants, and knowledge engines
 
 📘 What is HCAM-KG™?
+
 HCAM-KG™ is a structured BFSI & AI knowledge graph where each glossary term includes:
 •	English Label
 •	Hindi Label
@@ -28,17 +29,20 @@ HCAM-KG™ is a structured BFSI & AI knowledge graph where each glossary term in
 All terms follow a strict JSON schema to ensure consistency, accuracy, and compatibility with AI systems and learning platforms.
 
 📁 Dataset Files
+
 All datasets are located in:
 /datasets/
 Each domain (e.g., Equity Derivatives, Mutual Funds, AI Literacy) has its own JSON file, validated using the HCAM-KG™ schema.
 
 📥 Download Links (Raw JSON)
+
 Use these links for direct API consumption, apps, or training datasets:
 https://raw.githubusercontent.com/<org>/<repo>/main/datasets/equity-derivatives.json
 https://raw.githubusercontent.com/<org>/<repo>/main/datasets/mutual-funds.json
 https://raw.githubusercontent.com/<org>/<repo>/main/datasets/hindi-ai-literacy.json
 
 📐 JSON Schema
+
 All glossary files follow the unified schema stored in:
 /schema/hcam-schema.json
 This ensures:
@@ -48,6 +52,7 @@ This ensures:
 •	AI-ready, machine-readable format
 
 🤝 Contributing
+
 We welcome contributions from educators, domain experts, and developers.
 How to Contribute
 1.	Fork this repository
@@ -62,6 +67,7 @@ Full guidelines are available in:
 CONTRIBUTING.md
 
 🧠 Who Uses HCAM-KG™?
+
 •	B-30 learners preparing for BFSI exams
 •	NISM Series exam prep candidates
 •	Hindi-medium & Hinglish-medium students
@@ -73,6 +79,7 @@ CONTRIBUTING.md
 •	EdTech platforms building Hinglish or bilingual content
 
 🎯 Vision
+
 HCAM-KG™ aims to make BFSI + AI Literacy universally accessible in Hinglish, the real thinking language of millions of Bharat learners.
 This knowledge graph is part of GurukulOnRoad’s mission to:
 •	Simplify finance & AI concepts
@@ -81,6 +88,7 @@ This knowledge graph is part of GurukulOnRoad’s mission to:
 •	Support AI pipelines, knowledge apps, and educational agents
 
 📬 Contact
+
 For collaboration, dataset use cases, or partnerships:
 
 GurukulOnRoad & GurukulAI Thought Lab

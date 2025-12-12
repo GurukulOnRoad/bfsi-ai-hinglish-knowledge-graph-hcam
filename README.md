@@ -1,6 +1,7 @@
-HCAM-KG™  - BFSI & AI Hinglish Knowledge Graph Powered by GurukulOnRoad & GurukulAI Thought Lab
+HCAM-KG™ - BFSI & AI Literacy Hinglish Knowledge Graph (Powered by HCAM™) 
+Hinglish Cognitive Anchoring Model™ – Knowledge Graph. A Bharat AI Education Initiative by GurukulOnRoad & GurukulAI Thought Lab
 
-HCAM-KG™ (Hinglish Cognitive Anchoring Model™) is India’s first trilingual (Hindi ↔ English ↔ Hinglish) knowledge graph designed for Bharat learners, especially B-30 exam aspirants, BFSI professionals, and AI literacy learners.
+HCAM-KG™ is India’s first trilingual (Hindi ↔ English ↔ Hinglish), exam-ready and AI-ready knowledge graph for BFSI and AI Literacy under Bharat AI Education, designed to bridge the Hindi–English learning gap for Bharat learners through structured, schema-validated concepts, created to serve the real thinking language of Bharat - Hinglish.
 This repository provides structured, schema-validated datasets that power:
 
 •	Equity Derivatives Hinglish Glossary (NISM Series VIII)
@@ -140,4 +141,19 @@ GurukulOnRoad & GurukulAI Thought Lab
 📧 kgproject@gurukulonroad.com
 
 🌐 https://www.gurukulonroad.com
+
+At its core, HCAM-KG™ exists to ensure that language never becomes a barrier to intelligence, opportunity, or creation in India.
+
+Where Bharat Thinks in Hinglish, Learns with Clarity, and Builds with Confidence.
+From Confusion to Clarity  - Hinglish Knowledge, Exam-Ready, AI-Ready.
+Language-First Knowledge Graph for BFSI & AI Literacy in India.
+
+CITATION (Books, Research, GitHub, Schema):
+
+Title: HCAM-KG™ - Hinglish Knowledge Graph for BFSI & AI Literacy
+Authors / Publisher: GurukulOnRoad & GurukulAI Thought Lab
+Year: 2025
+URL: https://learn.gurukulonroad.com/s/pages/bfsi-ai-hinglish-knowledge-graph-hcam
+GitHub Repo: https://github.com/GurukulOnRoad/bfsi-ai-hinglish-knowledge-graph-hcam 
+License: Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
 

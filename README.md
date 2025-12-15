@@ -5,12 +5,16 @@ HCAM-KG™ is India’s first trilingual (Hindi ↔ English ↔ Hinglish), exam-
 This repository provides structured, schema-validated datasets that power:
 
 •	HCAM-KG™ PromptOps, AI-Ethics, Reliability, & Conscious Visibility™ DefinedTerms-001-062-V1
+LIVE: https://ai.gurukulonroad.com/p/prompt-ops-engineering-hcam-kg.html
 
 •	Equity Derivatives Hinglish Glossary (NISM Series VIII)
+LIVE: https://learn.gurukulonroad.com/s/pages/equity-derivatives-knowledge-graph-hcam-viii
 
 •	Mutual Funds Hinglish Glossary (NISM V-A)
+LIVE: https://learn.gurukulonroad.com/s/pages/glossary-b30-bharat-mutual-fund-vocabulary-hindi-english-hinglish-nism-va-mf-dictionary-master-key-faq
 
 •	Bharat AI Education & Hindi AI Literacy Glossary
+LIVE: https://learn.gurukulonroad.com/s/pages/bharat-ai-education-hindi-ai-glossary-faq-b30-machine-conversations
 
 •	B-30 Bharat Financial Education Glossary
 

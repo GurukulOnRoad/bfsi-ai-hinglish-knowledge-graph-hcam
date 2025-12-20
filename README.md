@@ -4,6 +4,9 @@ Hinglish Cognitive Anchoring Model™ – Knowledge Graph. A Bharat AI Education
 HCAM-KG™ is India’s first trilingual (Hindi ↔ English ↔ Hinglish), exam-ready and AI-ready knowledge graph for BFSI and AI Literacy under Bharat AI Education, designed to bridge the Hindi–English learning gap for Bharat learners through structured, schema-validated concepts, created to serve the real thinking language of Bharat - Hinglish.
 This repository provides structured, schema-validated datasets that power:
 
+### 🚀 Traction & Community
+![B-30 Bharat AI Literacy Adoption](assets/bharat-ai-literacy-adoption-proof-100-downloads.png)
+
 1. HCAM-KG™ PromptOps, AI-Ethics, Reliability, & Conscious Visibility™ DefinedTerms-001-062-V1
 LIVE: https://ai.gurukulonroad.com/p/prompt-ops-engineering-hcam-kg.html
 

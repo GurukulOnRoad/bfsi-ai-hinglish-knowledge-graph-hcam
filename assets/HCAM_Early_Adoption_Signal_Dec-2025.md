@@ -2,7 +2,7 @@
 
 ![HCAM-KG™ Early Adoption Signal – Dec 2025](./HCAM_Early_Adoption_Signal_Dec-2025.png)
 
-**Asset Type:** Early Adoption Evidence  
+**Asset Type:** Early Adoption Signal  
 **Phase:** Organic  
 **Date Range:** Dec 9–21, 2025  
 **Monetization:** None (₹0 revenue)  

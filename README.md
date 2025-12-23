@@ -8,6 +8,20 @@ This repository provides structured, schema-validated datasets that power:
 ![B-30 Bharat AI Literacy Adoption](assets/bharat-ai-literacy-adoption-proof-100-downloads.png)
 > B-30 Bharat AI Literacy Early Adoption milestone - 100+ verified downloads of the Hinglish HCAM-KG™ B-30 Bharat AI Literacy Dictionary under the Bharat AI Education initiative. *Data verified from Google Play Books Partner Center (free distribution, zero-revenue), Dec 2025.*
 
+---
+
+### 📈 Early Adoption Evidence (Expanded)
+
+![HCAM-KG™ Early Adoption Signal – Dec 2025](assets/HCAM_Early_Adoption_Signal_Dec-2025.png)
+
+> **HCAM-KG™ Early Adoption Signal (Dec 2025):**  
+> 290+ organic unit downloads across multiple HCAM-KG™ dictionary assets under free distribution (₹0 revenue, no paid promotion).  
+> This signal is documented as **HCAM-KG™ cognitive adoption**, indicating reference usage, vocabulary uptake, and early **Human + Machine** collaboration behavior.  
+>  
+> 📄 Full documentation & interpretation:  
+> `assets/HCAM_Early_Adoption_Signal_Dec-2025.md`
+
+
 1. HCAM-KG™ PromptOps, AI-Ethics, Reliability, & Conscious Visibility™ DefinedTerms-001-062-V1
 LIVE: https://ai.gurukulonroad.com/p/prompt-ops-engineering-hcam-kg.html
 

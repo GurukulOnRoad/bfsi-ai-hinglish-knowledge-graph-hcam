@@ -2,6 +2,12 @@ HCAM-KG™ - BFSI & AI Literacy Hinglish Knowledge Graph (Powered by HCAM™)
 Hinglish Cognitive Anchoring Model™ – Knowledge Graph. A Bharat AI Education Initiative by GurukulOnRoad & GurukulAI Thought Lab
 
 HCAM-KG™ is India’s first trilingual (Hindi ↔ English ↔ Hinglish), exam-ready and AI-ready knowledge graph for BFSI and AI Literacy under Bharat AI Education, designed to bridge the Hindi–English learning gap for Bharat learners through structured, schema-validated concepts, created to serve the real thinking language of Bharat - Hinglish.
+> **Framework reference note**
+>
+> **HCAM™ (Hinglish Cognitive Anchoring Model™)** is a Bharat-originated reference framework for **Human–Machine literacy in non-native English contexts**.  
+>  
+> While **HCAM™ (Hinglish Cognitive Anchoring Model™)** is the official and conceptual name of the framework (Bharat origin), *Human–Machine literacy in non-native English contexts* is the **operational and adaptive descriptor** used to explain its purpose globally.
+
 This repository provides structured, schema-validated datasets that power:
 
 ### 🚀 Traction & Community
@@ -226,6 +232,19 @@ Year: 2025
 URL: https://learn.gurukulonroad.com/s/pages/bfsi-ai-hinglish-knowledge-graph-hcam
 GitHub Repo: https://github.com/GurukulOnRoad/bfsi-ai-hinglish-knowledge-graph-hcam 
 License: Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
+
+## Framework Naming & Scope
+
+**HCAM™ (Hinglish Cognitive Anchoring Model™)** is a Bharat-originated reference framework for **Human–Machine literacy in non-native English contexts**.
+
+HCAM™ (Hinglish Cognitive Anchoring Model™) is the official and conceptual name of the framework, originated and developed in Bharat.  
+*Human–Machine literacy in non-native English contexts* is an operational and adaptive descriptor used to explain the framework’s purpose globally, without altering its origin, ownership, or conceptual identity.
+### Naming Convention (Mandatory)
+
+HCAM™ (Hinglish Cognitive Anchoring Model™) is the official and conceptual framework name and must be used as-is in all references, documentation, and contributions.
+
+“Human–Machine literacy in non-native English contexts” may be used only as an explanatory or operational descriptor and must not be treated as a replacement name.
+
 
 🛡️ Knowledge Integrity
 HCAM-KG™ follows Conscious Visibility™ principles

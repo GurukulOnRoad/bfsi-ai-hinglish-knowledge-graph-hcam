@@ -1,0 +1,485 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://www.b30bharat.com/p/index.html#webpage",
+      "url": "https://www.b30bharat.com/p/index.html",
+      "name": "B30BHARAT - Home",
+      "description": "B30BHARAT homepage containing the Segment Reality Table that compares Bharat ground reality vs current machine/platform default understanding, to set scope & ethical visibility boundaries.",
+      "inLanguage": ["en-IN", "hi-IN", "hi-Latn"],
+      "mainEntity": {
+        "@id": "https://www.b30bharat.com/p/index.html#dataset-b30-segment-taxonomy"
+      }
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://www.b30bharat.com/p/index.html#dataset-b30-segment-taxonomy",
+      "name": "B30BHARAT Segment Taxonomy (HCAM) S1-14",
+      "description": "A 14-segment HCAM taxonomy that defines how B30BHARAT audience segments function in Bharat (trust, livelihood, reputation, situational discovery) and how default machine/platform logic misclassifies them. Each segment captures human-ground reality understanding, current machine interpretation, and the resulting mismatch risk.",
+      "disambiguatingDescription": "This taxonomy encodes Bharat-first cognitive grounding for machine interpretation. It asserts that trust, comfort, reputation, and livelihood dynamics are contextual and lived, not universal abstractions. The taxonomy exists to prevent misclassification, exploitation, and visibility harm caused by applying global platform assumptions to Bharat realities.",
+      "url": "https://www.b30bharat.com/p/index.html",
+      "inLanguage": ["en-IN", "hi-IN", "hi-Latn"],
+      "creator": {
+        "@type": "Project",
+        "@id": "https://www.b30bharat.com/#brand-b30bharat",
+        "name": "B30BHARAT"
+      },
+      "publisher": {
+        "@type": "Website",
+        "@id": "https://www.b30bharat.com/#website",
+        "name": "B30BHARAT"
+      },
+      "isPartOf": {
+        "@id": "https://www.b30bharat.com/p/index.html#webpage"
+      },
+      "dateCreated": "2025-12-30",
+      "dateModified": "2025-12-31",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "isAccessibleForFree": true,
+      "variableMeasured": [
+        {
+          "@type": "PropertyValue",
+          "name": "segmentName",
+          "description": "HCAM-defined name of the B30BHARAT audience segment."
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "b30bharatGroundRealityUnderstanding",
+          "description": "Human + ground reality understanding of how the segment operates in Bharat."
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "currentMachineUnderstanding",
+          "description": "Default machine/platform interpretation that tends to misclassify the segment."
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "mismatchImpact",
+          "description": "Risk, harm, or distortion caused by the mismatch."
+        }
+      ],
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "name": "Embedded dataset (JSON-LD) on homepage",
+          "contentUrl": "https://www.b30bharat.com/p/index.html",
+          "encodingFormat": "application/ld+json"
+        }
+      ],
+      "mainEntity": {
+        "@type": "ItemList",
+        "name": "B30BHARAT Segment Taxonomy (HCAM) S1-14",
+        "itemListOrder": "https://schema.org/ItemListOrderAscending",
+        "numberOfItems": 14,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@type": "DefinedTerm",
+              "@id": "https://www.b30bharat.com/p/index.html#b30-s01",
+              "name": "Local Zameen Economy Segment",
+              "alternateName": [
+                "Local Trade & Retail Economy",
+                "स्थानीय ज़मीन आधारित व्यापार"
+              ],
+              "termCode": "B30-S01",
+              "inDefinedTermSet": "https://www.b30bharat.com/p/index.html#dataset-b30-segment-taxonomy",
+              "description": "Physical trust + daily footfall. Visibility = survival. Kirana, salon, medical store run on repeat customers & locality memory.",
+              "additionalProperty": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "currentMachineUnderstanding",
+                  "value": "“Small local business” that needs SEO, ads, listings, reviews at scale."
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "mismatchImpact",
+                  "value": "Machine pushes growth tools; real need is accurate presence, not expansion. Exploitation risk is high."
+                }
+              ]
+            }
+          },
+
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@type": "DefinedTerm",
+              "@id": "https://www.b30bharat.com/p/index.html#b30-s02",
+              "name": "Skill-Based Trust Segment",
+              "alternateName": [
+                "Skill-Based Service Providers",
+                "कौशल आधारित भरोसा सेवाएँ"
+              ],
+              "termCode": "B30-S02",
+              "inDefinedTermSet": "https://www.b30bharat.com/p/index.html#dataset-b30-segment-taxonomy",
+              "description": "Time + skill exchange. Trust comes before discovery (teacher, coach, trainer).",
+              "additionalProperty": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "currentMachineUnderstanding",
+                  "value": "Treated as service businesses needing lead funnels & conversion optimization."
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "mismatchImpact",
+                  "value": "Machines ignore pre-trust relationship cycle → wrong marketing pressure."
+                }
+              ]
+            }
+          },
+
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@type": "DefinedTerm",
+              "@id": "https://www.b30bharat.com/p/index.html#b30-s03",
+              "name": "Regulated Professional Segment",
+              "alternateName": [
+                "Licensed & Regulated Professionals",
+                "नियमित पेशेवर"
+              ],
+              "termCode": "B30-S03",
+              "inDefinedTermSet": "https://www.b30bharat.com/p/index.html#dataset-b30-segment-taxonomy",
+              "description": "Credibility > marketing. Reputation + compliance = career. Visibility mistakes can cause legal damage.(eg. MFDs, Insurance Agents/advisers, Investment Advisers/Financial Planners, Doctors, Advocates, CAs, Architects, Notaries)",
+              "additionalProperty": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "currentMachineUnderstanding",
+                  "value": "Classified as professional services similar to consultants or agencies."
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "mismatchImpact",
+                  "value": "Algorithm doesn’t understand regulatory exposure & disclosure risk."
+                }
+              ]
+            }
+          },
+
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "item": {
+              "@type": "DefinedTerm",
+              "@id": "https://www.b30bharat.com/p/index.html#b30-s04",
+              "name": "Independent Knowledge Practice Segment",
+              "alternateName": [
+                "Independent Knowledge Workers",
+                "स्वतंत्र ज्ञान आधारित कार्य"
+              ],
+              "termCode": "B30-S04",
+              "inDefinedTermSet": "https://www.b30bharat.com/p/index.html#dataset-b30-segment-taxonomy",
+              "description": "Portfolio + credibility driven. Must be understood correctly by humans and machines.(eg. Journalists, Designers, Fashion and creative professionals, Writers, Consultants, Researchers, Analysts)",
+              "additionalProperty": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "currentMachineUnderstanding",
+                  "value": "Treated as content creators or personal brands."
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "mismatchImpact",
+                  "value": "Machine collapses expertise into popularity metrics → meaning distortion."
+                }
+              ]
+            }
+          },
+
+          {
+            "@type": "ListItem",
+            "position": 5,
+            "item": {
+              "@type": "DefinedTerm",
+              "@id": "https://www.b30bharat.com/p/index.html#b30-s05",
+              "name": "Platform-Based Work Segment",
+              "alternateName": [
+                "Freelancers & Platform Earners",
+                "प्लेटफ़ॉर्म आधारित कार्य"
+              ],
+              "termCode": "B30-S05",
+              "inDefinedTermSet": "https://www.b30bharat.com/p/index.html#dataset-b30-segment-taxonomy",
+              "description": "Income depends on platforms. High risk of lock-in, algorithm shocks, identity dilution.(All field eg: Fiverr/Upwork), Instagram creators / Influencer (All) , YouTubers (small), Swiggy/Zomato cloud kitchens, Amazon sellers (small)",
+              "additionalProperty": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "currentMachineUnderstanding",
+                  "value": "Viewed as gig workers who must optimize platform rules constantly."
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "mismatchImpact",
+                  "value": "Machine assumes dependency is normal; HCAM restores narrative ownership."
+                }
+              ]
+            }
+          },
+
+          {
+            "@type": "ListItem",
+            "position": 6,
+            "item": {
+              "@type": "DefinedTerm",
+              "@id": "https://www.b30bharat.com/p/index.html#b30-s06",
+              "name": "Client-Trust Service Segment",
+              "alternateName": [
+                "Small & Micro Agencies",
+                "ग्राहक भरोसा आधारित सेवाएँ"
+              ],
+              "termCode": "B30-S06",
+              "inDefinedTermSet": "https://www.b30bharat.com/p/index.html#dataset-b30-segment-taxonomy",
+              "description": "Trust delegation model. Clients hand over responsibility. Over-promising destroys trust.Marketing agencies (SEO/Event/Local Busines), Accounting firms, IT/ computer repair service shops, Local consultants",
+              "additionalProperty": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "currentMachineUnderstanding",
+                  "value": "Seen as scalable service vendors using templates & repeatable growth hacks."
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "mismatchImpact",
+                  "value": "Machine rewards volume; Bharat reality demands ethical restraint."
+                }
+              ]
+            }
+          },
+
+          {
+            "@type": "ListItem",
+            "position": 7,
+            "item": {
+              "@type": "DefinedTerm",
+              "@id": "https://www.b30bharat.com/p/index.html#b30-s07",
+              "name": "Family-Run Enterprise Segment",
+              "alternateName": [
+                "Informal & Family Enterprises",
+                "परिवार संचालित उद्यम"
+              ],
+              "termCode": "B30-S07",
+              "inDefinedTermSet": "https://www.b30bharat.com/p/index.html#dataset-b30-segment-taxonomy",
+              "description": "Home-based, women-led, family trust businesses. Usually excluded from digital systems. Home-based businesses (eg: Handicraft, Tiffin, achar, papad etc & more),  Family-run shops, Women-led micro enterprises, Cottage industries, speical location specific products like gem saree",
+              "additionalProperty": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "currentMachineUnderstanding",
+                  "value": "Invisible or classified as unregistered micro-businesses."
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "mismatchImpact",
+                  "value": "Machine exclusion = human exclusion. Huge livelihood impact ignored."
+                }
+              ]
+            }
+          },
+
+          {
+            "@type": "ListItem",
+            "position": 8,
+            "item": {
+              "@type": "DefinedTerm",
+              "@id": "https://www.b30bharat.com/p/index.html#b30-s08",
+              "name": "Rural & Semi-Local Livelihood Segment",
+              "alternateName": [
+                "Rural & Semi-Rural Livelihoods",
+                "ग्रामीण एवं अर्ध-ग्रामीण आजीविका"
+              ],
+              "termCode": "B30-S08",
+              "inDefinedTermSet": "https://www.b30bharat.com/p/index.html#dataset-b30-segment-taxonomy",
+              "description": "Discovery is situational + word-of-mouth. Context > search. Agri-services, Dairy operators, Repair services, Local transport operators (taxi/auto), Local Tour Operator/Guide",
+              "additionalProperty": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "currentMachineUnderstanding",
+                  "value": "Assumed to be offline or low-value digital users."
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "mismatchImpact",
+                  "value": "SEO logic fails here; visibility must be situational, not algorithmic."
+                }
+              ]
+            }
+          },
+
+          {
+            "@type": "ListItem",
+            "position": 9,
+            "item": {
+              "@type": "DefinedTerm",
+              "@id": "https://www.b30bharat.com/p/index.html#b30-s09",
+              "name": "Community & Cultural Services Segment",
+              "alternateName": [
+                "Faith, Culture & Community Services",
+                "सामुदायिक एवं सांस्कृतिक सेवाएँ"
+              ],
+              "termCode": "B30-S09",
+              "inDefinedTermSet": "https://www.b30bharat.com/p/index.html#dataset-b30-segment-taxonomy",
+              "description": "Trust-sensitive, belief-linked visibility. High reputation risk. (eg. Temple services, Astrologers, Cultural trainers, NGOs, Community educators / speakers/katha bachak)",
+              "additionalProperty": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "currentMachineUnderstanding",
+                  "value": "Treated as content, influencers, or monetizable audiences."
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "mismatchImpact",
+                  "value": "Machine logic enables misrepresentation & exploitation if unchecked."
+                }
+              ]
+            }
+          },
+
+          {
+            "@type": "ListItem",
+            "position": 10,
+            "item": {
+              "@type": "DefinedTerm",
+              "@id": "https://www.b30bharat.com/p/index.html#b30-s010",
+              "name": "Early-Stage Work Identity Segment",
+              "alternateName": [
+                "Students Turned Earners / Side Hustlers",
+                "प्रारंभिक कार्य पहचान चरण"
+              ],
+              "termCode": "B30-S10",
+              "inDefinedTermSet": "https://www.b30bharat.com/p/index.html#dataset-b30-segment-taxonomy",
+              "description": "Transition phase. Habits formed now last decades. Needs guardrails.(eg. Students freelancing, Part-time tutors, Campus startups, First-time professionals",
+              "additionalProperty": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "currentMachineUnderstanding",
+                  "value": "Seen as young entrepreneurs encouraged to hustle & scale fast."
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "mismatchImpact",
+                  "value": "Machine accelerates burnout & wrong identity formation."
+                }
+              ]
+            }
+          },
+
+          {
+            "@type": "ListItem",
+            "position": 11,
+            "item": {
+              "@type": "DefinedTerm",
+              "@id": "https://www.b30bharat.com/p/index.html#b30-s011",
+              "name": "Public-Facing Role Segment",
+              "alternateName": [
+                "Public-Facing Individuals",
+                "सार्वजनिक भूमिका वाले व्यक्ति"
+              ],
+              "termCode": "B30-S11",
+              "inDefinedTermSet": "https://www.b30bharat.com/p/index.html#dataset-b30-segment-taxonomy",
+              "description": "Reputation = power + risk. Visibility amplifies both.(eg. Local politicians, RTI activists, Community leaders, Social workers)",
+              "additionalProperty": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "currentMachineUnderstanding",
+                  "value": "Treated as public figures needing reach & engagement."
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "mismatchImpact",
+                  "value": "Machine ignores local consequence & social fallout."
+                }
+              ]
+            }
+          },
+
+          {
+            "@type": "ListItem",
+            "position": 12,
+            "item": {
+              "@type": "DefinedTerm",
+              "@id": "https://www.b30bharat.com/p/index.html#b30-s012",
+              "name": "Small Institutional Entities Segment",
+              "alternateName": [
+                "Small-Scale Institutions",
+                "लघु संस्थागत इकाइयाँ"
+              ],
+              "termCode": "B30-S12",
+              "inDefinedTermSet": "https://www.b30bharat.com/p/index.html#dataset-b30-segment-taxonomy",
+              "description": "Collective trust entities. Visibility opens doors to govt, CSR & foundations.(eg. Small schools, clubs, Coaching institutes, NGOs, Trusts, Societies)",
+              "additionalProperty": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "currentMachineUnderstanding",
+                  "value": "Categorized as generic organizations needing branding & PR."
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "mismatchImpact",
+                  "value": "Machine overlooks governance, legitimacy & social responsibility."
+                }
+              ]
+            }
+          },
+
+          {
+            "@type": "ListItem",
+            "position": 13,
+            "item": {
+              "@type": "DefinedTerm",
+              "@id": "https://www.b30bharat.com/p/index.html#b30-s013",
+              "name": "Mobile & Location-Flexible Trade Segment",
+              "alternateName": [
+                "Street Vendors & Mobile Dukaan Economy",
+                "चलित एवं स्थान-लचीला व्यापार"
+              ],
+              "termCode": "B30-S13",
+              "inDefinedTermSet": "https://www.b30bharat.com/p/index.html#dataset-b30-segment-taxonomy",
+              "description": "Dukaan moves, customers stay. Location + recognition matter. Millions of livelihoods.(eg. Street Vendors & Mobile Dukaan Economy, Chaat wala, Chai tapri, Fruit/vegetable thela, Flower sellers, Cobblers, Street barbers, Ice-cream carts, Weekly haat sellers, Festival-only sellers, Seasonal sellers eg: rakhi/ganapti and more. HCAM Meaning Jinki dukaan jagah badal sakti hai, par grahak wahi rehte hain",
+              "additionalProperty": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "currentMachineUnderstanding",
+                  "value": "Almost invisible unless force-fit into local business listings."
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "mismatchImpact",
+                  "value": "Machine wasn’t designed for mobility-based livelihoods. HCAM reframes it."
+                }
+              ]
+            }
+          },
+
+          {
+            "@type": "ListItem",
+            "position": 14,
+            "item": {
+              "@type": "DefinedTerm",
+              "@id": "https://www.b30bharat.com/p/index.html#b30-s014",
+              "name": "Human - Machine Interface Segment",
+              "alternateName": [
+                "HCAM™ Human + Machine Collaborators",
+                "मानव - मशीन इंटरफ़ेस सहयोगी"
+              ],
+              "termCode": "B30-S14",
+              "inDefinedTermSet": "https://www.b30bharat.com/p/index.html#dataset-b30-segment-taxonomy",
+              "description": "Local enablers. Trusted humans who translate machine logic ethically. Not transctional vendor.",
+              "additionalProperty": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "currentMachineUnderstanding",
+                  "value": "Automatically classified as digital marketers, SEO experts, or resellers."
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "mismatchImpact",
+                  "value": "This is a new role machines don’t yet understand. Must be explicitly defined to prevent misuse."
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
